@@ -12,14 +12,14 @@
       <view id="table-header" class="wd-table__content" :style="realWidthStyle" style="position: sticky; top: 0; z-index: 2">
         <view
           :class="`wd-table__cell ${border ? 'is-border' : ''} ${column.fixed ? 'is-fixed' : ''} ${stripe ? 'is-stripe' : ''} is-${column.align} ${
-            isLastFixed(column) && reactiveState.scrollLeft ? 'is-shadow' : ''
+            getIsLastFixed(column) && reactiveState.scrollLeft ? 'is-shadow' : ''
           }`"
-          :style="headerCellStyle(index)"
-          v-for="(column, index) in reactiveState.columns"
+          :style="getCellStyle(index)"
+          v-for="(column, index) in children"
           :key="index"
         >
           <wd-sort-button
-            v-model="column.sortDirection"
+            v-model="column.$.exposed!.sortDirection.value"
             allow-reset
             :line="false"
             :title="column.label"
@@ -71,30 +71,30 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { type CSSProperties, computed, provide, watch, reactive, ref } from 'vue'
-import { addUnit, debounce, deepClone, isDef, isObj, objToStyle, uuid } from '../common/util'
-import type { SortDirection, TableColumn, TableColumnProps } from '../wd-table-col/types'
-import { tableProps } from './types'
+import { type CSSProperties, computed, reactive, ref } from 'vue'
+import { addUnit, debounce, isDef, isObj, objToStyle, uuid } from '../common/util'
+import type { SortDirection, TableColumn, TableColumnInstance, TableColumnProps } from '../wd-table-col/types'
+import { TABLE_KEY, tableProps, type TableProvide } from './types'
 import WdTableCol from '../wd-table-col/wd-table-col.vue'
 import { useTranslate } from '../composables/useTranslate'
+import { useChildren } from '../composables/useChildren'
 
 const { translate } = useTranslate('tableCol')
 
 const props = defineProps(tableProps)
 const emit = defineEmits(['sort-method', 'row-click'])
-const reactiveState = reactive({
-  data: props.data,
-  stripe: props.stripe,
-  border: props.border,
-  height: props.height,
-  rowHeight: props.rowHeight,
-  showHeader: props.showHeader,
-  ellipsis: props.ellipsis,
+
+const reactiveState = reactive<TableProvide>({
+  props,
   scrollLeft: 0,
-  columns: [] as TableColumn[],
-  setRowClick,
-  setColumns
+  rowClick,
+  getIsLastFixed,
+  getFixedStyle
 })
+
+const { linkChildren, children } = useChildren<TableColumnInstance, TableProvide>(TABLE_KEY)
+
+linkChildren(reactiveState)
 
 const indexUUID = uuid()
 const indexColumn = ref<TableColumnProps>({
@@ -108,63 +108,6 @@ const indexColumn = ref<TableColumnProps>({
 })
 
 const scroll = debounce(handleScroll, 100, { leading: false }) // 滚动事件
-
-provide('wdTable', reactiveState)
-
-watch(
-  () => props.data,
-  (newValue) => {
-    reactiveState.data = newValue
-  },
-  { deep: true }
-)
-
-watch(
-  () => props.stripe,
-  (newValue) => {
-    reactiveState.stripe = newValue
-  },
-  { deep: true }
-)
-
-watch(
-  () => props.border,
-  (newValue) => {
-    reactiveState.border = newValue
-  },
-  { deep: true }
-)
-
-watch(
-  () => props.height,
-  (newValue) => {
-    reactiveState.height = newValue
-  },
-  { deep: true }
-)
-
-watch(
-  () => props.rowHeight,
-  (newValue) => {
-    reactiveState.rowHeight = newValue
-  },
-  { deep: true }
-)
-watch(
-  () => props.showHeader,
-  (newValue) => {
-    reactiveState.showHeader = newValue
-  },
-  { deep: true }
-)
-
-watch(
-  () => props.ellipsis,
-  (newValue) => {
-    reactiveState.ellipsis = newValue
-  },
-  { deep: true }
-)
 
 /**
  * 容器样式
@@ -182,8 +125,8 @@ const realWidthStyle = computed(() => {
     display: 'flex'
   }
   let width: string | number = ''
-  reactiveState.columns.forEach((column) => {
-    width = width ? `${width} + ${addUnit(column.width)}` : addUnit(column.width)
+  children.forEach((child) => {
+    width = width ? `${width} + ${addUnit(child.width)}` : addUnit(child.width)
   })
   style['width'] = `calc(${width})`
   return objToStyle(style)
@@ -201,11 +144,11 @@ const bodyStyle = computed(() => {
  * 是否最后一个固定元素
  * @param column 列数据
  */
-function isLastFixed(column: TableColumn) {
+function getIsLastFixed(column: { fixed: boolean; prop: string }) {
   let isLastFixed: boolean = false
-  if (column.fixed && isDef(reactiveState.columns)) {
-    const columns = reactiveState.columns.filter((column) => {
-      return column.fixed
+  if (column.fixed && isDef(children)) {
+    const columns = children.filter((child) => {
+      return child.fixed
     })
     if (columns.length && columns[columns.length - 1].prop === column.prop) {
       isLastFixed = true
@@ -215,39 +158,36 @@ function isLastFixed(column: TableColumn) {
 }
 
 /**
- * 设置列
- * @param column 列
+ * 表头单元格样式
  */
-function setColumns(column: TableColumn) {
-  if (column.prop === indexUUID) {
-    reactiveState.columns = deepClone([column, ...reactiveState.columns])
-  } else {
-    reactiveState.columns = deepClone([...reactiveState.columns, column])
+function getCellStyle(columnIndex: number) {
+  let style: CSSProperties = {}
+  if (isDef(children[columnIndex].width)) {
+    style['width'] = addUnit(children[columnIndex].width)
   }
+  if (children[columnIndex].fixed) {
+    style = getFixedStyle(columnIndex, style)
+  }
+  return objToStyle(style)
 }
 
 /**
- * 表头单元格样式
+ * 获取固定列样式
+ * @param columnIndex
  */
-function headerCellStyle(columnIndex: number) {
-  const style: CSSProperties = {}
-  if (isDef(reactiveState.columns[columnIndex].width)) {
-    style['width'] = addUnit(reactiveState.columns[columnIndex].width)
+function getFixedStyle(columnIndex: number, style: CSSProperties) {
+  if (columnIndex > 0) {
+    let left: string | number = ''
+    children.forEach((column, index) => {
+      if (index < columnIndex) {
+        left = left ? `${left} + ${addUnit(column.width)}` : addUnit(column.width)
+      }
+    })
+    style['left'] = `calc(${left})`
+  } else {
+    style['left'] = 0
   }
-  if (reactiveState.columns[columnIndex].fixed) {
-    if (columnIndex > 0) {
-      let left: string | number = ''
-      reactiveState.columns.forEach((column, index) => {
-        if (index < columnIndex) {
-          left = left ? `${left} + ${addUnit(column.width)}` : addUnit(column.width)
-        }
-      })
-      style['left'] = `calc(${left})`
-    } else {
-      style['left'] = 0
-    }
-  }
-  return objToStyle(style)
+  return style
 }
 
 /**
@@ -256,13 +196,29 @@ function headerCellStyle(columnIndex: number) {
  * @param index
  */
 function handleSortChange(value: SortDirection, index: number) {
-  reactiveState.columns[index].sortDirection = value
-  reactiveState.columns.forEach((col, i) => {
+  children[index].$.exposed!.sortDirection.value = value
+  children.forEach((col, i) => {
     if (index != i) {
-      col.sortDirection = 0
+      col.$.exposed!.sortDirection.value = 0
     }
   })
-  emit('sort-method', reactiveState.columns[index])
+  const column: TableColumn = {
+    // 列对应字段
+    prop: children[index].prop,
+    // 列对应字段标题
+    label: children[index].label,
+    // 列宽度
+    width: children[index].width,
+    // 是否开启列排序
+    sortable: children[index].sortable,
+    // 列的对齐方式，可选值left,center,right
+    align: children[index].align,
+    // 列的排序方向
+    sortDirection: value,
+    // 是否i固定列
+    fixed: children[index].fixed
+  }
+  emit('sort-method', column)
 }
 
 /**
@@ -275,7 +231,7 @@ function handleScroll(event: any) {
   reactiveState.scrollLeft = event.detail.scrollLeft
 }
 
-function setRowClick(index: number) {
+function rowClick(index: number) {
   emit('row-click', { rowIndex: index })
 }
 </script>

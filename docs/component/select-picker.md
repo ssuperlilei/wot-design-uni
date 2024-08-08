@@ -6,7 +6,7 @@
 
 `label` 设置左侧文本内容；
 
-`columns` 设置数据源，为二维数组，每一列为一个一维数组，每个选项包含 `value`(选项值) 和 `label`(选项名称)；
+`columns` 设置数据源，一维数组，每个选项包含 `value`(选项值) 和 `label`(选项名称)；
 
 `v-model` 设置选中项的值，数据类型为 `Array` | `String` `Number` 或 `Boolean`；
 
@@ -242,7 +242,7 @@ const beforeConfirm = (value, resolve) => {
 如果默认的 cell 类型的展示格式不满足需求，可以通过默认插槽进行自定义选择器样式。
 
 ```html
-<veiw>当前选中项：{{customShow}}</view>
+<view>当前选中项：{{customShow}}</view>
 <wd-select-picker v-model="value" use-default-slot :columns="columns" @confirm="handleConfirm">
   <wd-button>默认唤起项</wd-button>
 </wd-select-picker>
@@ -377,6 +377,8 @@ function handleConfirm({ value, selectedItems }) {
 | confirm  | 点击确认时触发             | event.detail = { value, selectedItems }, checkbox 类型时 value 和 selectedItems 为数组，radio 类型为非数组 | -        |
 | change   | picker 内选项更改时触发    | `{ value }`, checkbox 类型时 value 为数组，radio 类型为非数组                                              | -        |
 | cancel   | 点击关闭按钮或者蒙层时触发 | -                                                                                                          | -        |
+| close   | 弹窗关闭时触发 | -                                                                                                          | 1.2.29        |
+| open   | 弹窗打开时触发 | -                                                                                                          | 1.2.29        |
 
 ## Methods
 

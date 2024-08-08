@@ -127,12 +127,13 @@ const filter = (type, values) => {
 | columns-height | picker内部滚筒高 | number | - | 231 | - |
 | formatter | 自定义弹出层选项文案的格式化函数，返回一个字符串 | function | - | - | - |
 | filter | 自定义过滤选项的函数，返回列的选项数组 | function | - | - | - |
-| minDate | 最小日期 | date | - | 当前日期 - 10年 | - |
-| maxDate | 最大日期 | date | - | 当前日期 + 10年 | - |
+| minDate | 最小日期，13 位的时间戳    | `timestamp` | - | 当前日期 - 10年 | - |
+| maxDate | 最大日期，13 位的时间戳  | `timestamp` | - | 当前日期 + 10年 | - |
 | minHour | 最小小时，time类型时生效 | number | - | 0 | - |
 | maxHour | 最大小时，time类型时生效 | number | - | 23 | - |
 | minMinute | 最小分钟，time类型时生效 | number | - | 0 | - |
 | maxMinute | 最大分钟，time类型时生效 | number | - | 59 | - |
+| immediate-change | 是否在手指松开时立即触发picker-view的 change 事件。若不开启则会在滚动动画结束后触发 change 事件，1.2.25版本起提供，仅微信小程序和支付宝小程序支持。 | boolean | - | false | 1.2.25 |
 ## Events
 
 | 事件名称 | 说明 | 参数 | 最低版本 |

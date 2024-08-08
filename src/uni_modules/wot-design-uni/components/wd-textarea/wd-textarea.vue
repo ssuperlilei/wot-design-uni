@@ -17,10 +17,10 @@
         :class="`wd-textarea__inner ${customTextareaClass}`"
         v-model="inputValue"
         :show-count="false"
-        :placeholder="placeholder || translate('placeholder')"
+        :placeholder="placeholderValue"
         :disabled="disabled"
         :maxlength="maxlength"
-        :focus="isFocus"
+        :focus="focused"
         :auto-focus="autoFocus"
         :placeholder-style="placeholderStyle"
         :placeholder-class="inputPlaceholderClass"
@@ -47,7 +47,7 @@
 
       <view v-if="readonly" class="wd-textarea__readonly-mask" />
       <view class="wd-textarea__suffix">
-        <wd-icon v-if="showClear" custom-class="wd-textarea__clear" name="error-fill" @click="clear" />
+        <wd-icon v-if="showClear" custom-class="wd-textarea__clear" name="error-fill" @click="handleClear" />
         <view v-if="showWordCount" class="wd-textarea__count">
           <text :class="countClass">
             {{ currentLength }}
@@ -72,7 +72,7 @@ export default {
 
 <script lang="ts" setup>
 import { computed, onBeforeMount, ref, watch } from 'vue'
-import { objToStyle, requestAnimationFrame } from '../common/util'
+import { objToStyle, requestAnimationFrame, isDef, pause } from '../common/util'
 import { useCell } from '../composables/useCell'
 import { FORM_KEY, type FormItemRule } from '../wd-form/types'
 import { useParent } from '../composables/useParent'
@@ -96,17 +96,20 @@ const emit = defineEmits([
   'click'
 ])
 
-const showClear = ref<boolean>(false)
-const showWordCount = ref<boolean>(false)
+const placeholderValue = computed(() => {
+  return isDef(props.placeholder) ? props.placeholder : translate('placeholder')
+})
+
 const clearing = ref<boolean>(false)
-const isFocus = ref<boolean>(false) // 是否聚焦
+const focused = ref<boolean>(false) // 控制聚焦
+const focusing = ref<boolean>(false) // 当前是否激活状态
 const inputValue = ref<string | number>('') // 输入框的值
 const cell = useCell()
 
 watch(
   () => props.focus,
   (newValue) => {
-    isFocus.value = newValue
+    focused.value = newValue
   },
   { immediate: true, deep: true }
 )
@@ -114,18 +117,32 @@ watch(
 watch(
   () => props.modelValue,
   (newValue) => {
-    const { disabled, readonly, clearable } = props
-    if (newValue === null || newValue === undefined) {
-      newValue = ''
-      console.warn('[wot-design] warning(wd-textarea): value can not be null or undefined.')
-    }
-    inputValue.value = newValue
-    showClear.value = Boolean(clearable && !disabled && !readonly && newValue)
+    inputValue.value = isDef(newValue) ? String(newValue) : ''
   },
   { immediate: true, deep: true }
 )
 
 const { parent: form } = useParent(FORM_KEY)
+
+/**
+ * 展示清空按钮
+ */
+const showClear = computed(() => {
+  const { disabled, readonly, clearable, clearTrigger } = props
+  if (clearable && !readonly && !disabled && inputValue.value && (clearTrigger === 'always' || (props.clearTrigger === 'focus' && focusing.value))) {
+    return true
+  } else {
+    return false
+  }
+})
+
+/**
+ * 展示字数统计
+ */
+const showWordCount = computed(() => {
+  const { disabled, readonly, maxlength, showWordLimit } = props
+  return Boolean(!disabled && !readonly && isDef(maxlength) && maxlength > -1 && showWordLimit)
+})
 
 // 表单校验错误信息
 const errorMessage = computed(() => {
@@ -190,64 +207,60 @@ onBeforeMount(() => {
 
 // 状态初始化
 function initState() {
-  const { disabled, readonly, clearable, maxlength, showWordLimit } = props
-  showClear.value = Boolean(!disabled && !readonly && clearable && inputValue.value)
-  showWordCount.value = Boolean(!disabled && !readonly && maxlength && showWordLimit)
-  inputValue.value = formatValue(inputValue.value as string)
+  inputValue.value = formatValue(inputValue.value)
   emit('update:modelValue', inputValue.value)
 }
 
-function formatValue(value: string) {
+function formatValue(value: string | number) {
   const { maxlength, showWordLimit } = props
-  if (showWordLimit && maxlength !== -1 && value.length > maxlength) {
+  if (showWordLimit && maxlength !== -1 && String(value).length > maxlength) {
     return value.toString().substring(0, maxlength)
   }
   return value
 }
 
-function clear() {
+function handleClear() {
+  clearing.value = true
+  focusing.value = false
   inputValue.value = ''
-  requestAnimationFrame()
-    .then(() => requestAnimationFrame())
-    .then(() => requestAnimationFrame())
-    .then(() => {
-      emit('change', {
-        value: ''
-      })
-      emit('update:modelValue', inputValue.value)
-      emit('clear')
-
-      requestAnimationFrame().then(() => {
-        isFocus.value = true
-      })
+  if (props.focusWhenClear) {
+    focused.value = false
+  }
+  requestAnimationFrame(() => {
+    if (props.focusWhenClear) {
+      focused.value = true
+      focusing.value = true
+    }
+    emit('change', {
+      value: ''
     })
-}
-// 失去焦点时会先后触发change、blur，未输入内容但失焦不触发 change 只触发 blur
-function handleBlur({ detail }: any) {
-  isFocus.value = false
-  emit('change', {
-    value: inputValue.value
-  })
-  emit('update:modelValue', inputValue.value)
-  emit('blur', {
-    value: inputValue.value,
-    // textarea 有 cursor
-    cursor: detail.cursor ? detail.cursor : null
+    emit('update:modelValue', inputValue.value)
+    emit('clear')
   })
 }
-function handleFocus({ detail }: any) {
+async function handleBlur({ detail }: any) {
+  // 等待150毫秒，clear执行完毕
+  await pause(150)
+
   if (clearing.value) {
     clearing.value = false
     return
   }
-  isFocus.value = true
+
+  focusing.value = false
+  emit('blur', {
+    value: inputValue.value,
+    cursor: detail.cursor ? detail.cursor : null
+  })
+}
+function handleFocus({ detail }: any) {
+  focusing.value = true
   emit('focus', detail)
 }
-// input事件需要传入
-function handleInput() {
+function handleInput({ detail }: any) {
   inputValue.value = formatValue(inputValue.value as string)
   emit('update:modelValue', inputValue.value)
-  emit('input', inputValue.value)
+  emit('input', detail)
 }
 function handleKeyboardheightchange({ detail }: any) {
   emit('keyboardheightchange', detail)
@@ -260,9 +273,6 @@ function handleLineChange({ detail }: any) {
 }
 function onClickPrefixIcon() {
   emit('clickprefixicon')
-}
-function handleClick(event: MouseEvent) {
-  emit('click', event)
 }
 </script>
 

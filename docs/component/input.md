@@ -44,6 +44,26 @@ function handleChange(event) {
 <wd-input v-model="value" clearable @change="handleChange"/>
 ```
 
+## 有值且聚焦时展示清空按钮
+设置 `clear-trigger` 属性，可以控制是否聚焦时才展示清空按钮。
+
+:::warning 注意
+支付宝小程序暂不支持 `clear-trigger` 属性，且某种情况下清空按钮无法点击，原因参考此[issue](https://github.com/ant-design/ant-design-mini/issues/1255)（希望可以早点解决，所以直接给蚂蚁的组件库提了个issue）。
+:::
+
+
+```html
+<wd-input v-model="value" clear-trigger="focus" clearable @change="handleChange"/>
+```
+
+## 点击清除按钮时不自动聚焦
+
+设置`focus-when-clear` 属性，可以控制点击清除按钮时是否自动聚焦。
+
+```html
+<wd-input type="text" :focus-when-clear="false" v-model="value" clearable />
+```
+
 ## 密码输入框
 
 设置 `show-password` 属性。
@@ -120,7 +140,7 @@ function handleChange(event) {
 | v-model |	绑定值 | string / number | - | - | - |
 | placeholder	| 占位文本 |	string | - |	请输入... | - |
 | clearable | 显示清空按钮 | boolean | - | false | - |
-| maxlength | 原生属性，最大长度 | string | - | - | - |
+| maxlength | 原生属性，最大长度 | number | - | 支付宝小程序无默认值，其余平台默认为-1 | - |
 | showPassword | 显示为密码框 | boolean | - | false | - |
 | disabled | 原生属性，禁用 | boolean | - | false | - |
 | readonly | 只读 | boolean | - | false | - |
@@ -150,6 +170,9 @@ function handleChange(event) {
 | no-border | 非 cell 类型下是否隐藏下划线 | boolean | - | false | - | - |
 | prop | 表单域 `model` 字段名，在使用表单校验功能的情况下，该属性是必填的 | string | - | - | - |
 | rules | 表单验证规则，结合`wd-form`组件使用	 | `FormItemRule []`	 | - | `[]` | - |
+| clearTrigger | 显示清除图标的时机，always 表示输入框不为空时展示，focus 表示输入框聚焦且不为空时展示	 | `InputClearTrigger`	 | `focus` / `always` | `always` | 1.3.7 |
+| focusWhenClear | 是否在点击清除按钮时聚焦输入框 | boolean | -      | true  | 1.3.7   |
+
 
 
 ### FormItemRule 数据结构

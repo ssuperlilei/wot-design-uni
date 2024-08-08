@@ -93,6 +93,7 @@
           :time-filter="timeFilter"
           :hide-second="hideSecond"
           :show-panel-title="!range(type)"
+          :immediate-change="immediateChange"
           @change="handleChange"
         />
       </view>
@@ -123,7 +124,7 @@ import { useCell } from '../composables/useCell'
 import { FORM_KEY, type FormItemRule } from '../wd-form/types'
 import { useParent } from '../composables/useParent'
 import { useTranslate } from '../composables/useTranslate'
-import { calendarProps, CalendarExpose } from './types'
+import { calendarProps, type CalendarExpose } from './types'
 import type { CalendarType } from '../wd-calendar-view/types'
 const { translate } = useTranslate('calendar')
 

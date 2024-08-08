@@ -8,7 +8,7 @@
     <!--文案-->
     <view class="wd-picker__field" @click="showPopup">
       <slot v-if="useDefaultSlot"></slot>
-      <view v-else class="wd-picker__cell">
+      <view v-else :class="['wd-picker__cell', customCellClass]">
         <view
           v-if="label || useLabelSlot"
           :class="`wd-picker__label ${customLabelClass} ${isRequired ? 'is-required' : ''}`"
@@ -102,6 +102,7 @@
             :max-minute="maxMinute"
             :min-minute="minMinute"
             :start-symbol="true"
+            :immediate-change="immediateChange"
             @change="onChangeStart"
             @pickstart="onPickStart"
             @pickend="onPickEnd"
@@ -128,6 +129,7 @@
             :max-minute="maxMinute"
             :min-minute="minMinute"
             :start-symbol="false"
+            :immediate-change="immediateChange"
             @change="onChangeEnd"
             @pickstart="onPickStart"
             @pickend="onPickEnd"
@@ -172,7 +174,7 @@ const { translate } = useTranslate('datetime-picker')
 const datetimePickerView = ref<DatetimePickerViewInstance>()
 const datetimePickerView1 = ref<DatetimePickerViewInstance>()
 
-const showValue = ref<string | Date | Array<string | Date>>([])
+const showValue = ref<string | Date | Array<string | Date>>('')
 const popupShow = ref<boolean>(false)
 const showStart = ref<boolean>(true)
 const region = ref<boolean>(false)

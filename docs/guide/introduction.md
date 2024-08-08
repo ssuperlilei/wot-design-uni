@@ -1,6 +1,6 @@
 #  介绍
 
-`wot-design-uni`组件库基于`vue3`+`Typescript`构建，参照`wot design`的设计规范进行开发，提供60+高质量组件，支持暗黑模式、国际化和自定义主题，旨在给开发者提供统一的UI交互，同时提高研发的开发效率。
+`wot-design-uni`组件库基于`vue3`+`Typescript`构建，参照`wot design`的设计规范进行开发，提供70+高质量组件，支持暗黑模式、国际化和自定义主题，旨在给开发者提供统一的UI交互，同时提高研发的开发效率。
 
 ## 快速上手
 
@@ -8,7 +8,8 @@
 
 ## 扫码体验
 
-<div style="display: inline-block; margin-right: 60px;">
+<div style="display:flex;gap:24px">
+<div style="display: inline-block;">
   <img style="width: 150px; height: 150px;" :src="WxQrcode" />
   <div style="text-align: center;">微信扫码</div>
 </div>
@@ -18,45 +19,69 @@
   <div style="text-align: center;">支付宝扫码</div>
 </div>
 
+<div style="display: inline-block;">
+  <img style="width: 150px; height: 150px;" :src="H5Qrcode" />
+  <div style="text-align: center;">浏览器扫码</div>
+</div>
+</div>
+
 ## ✨ 特性
 
 - 🎯 多平台覆盖，支持 微信小程序、支付宝小程序、钉钉小程序、H5、APP 等.
-- 🚀 60+ 个高质量组件，覆盖移动端主流场景.
+- 🚀 70+ 个高质量组件，覆盖移动端主流场景.
 - 💪 使用 Typescript 构建，提供良好的组件类型系统.
 - 🌍 支持国际化，内置 6 种语言包.
 - 📖 提供丰富的文档和组件示例.
 - 🎨 支持修改 CSS 变量实现主题定制.
 - 🍭 支持暗黑模式
 
-> 使用Vue3最新特性开发，持续优化体验
 
 ## 链接
 
-* [意见反馈](https://github.com/Moonofweisheng/wot-design-uni/issues)
 * [更新日志](/guide/changelog)
 * [常见问题](/guide/common-problems)
 * [Discussions 讨论区](https://github.com/Moonofweisheng/wot-design-uni/discussions)
-* [QQ 群](https://qm.qq.com/cgi-bin/qm/qr?k=O1Z3pal6StL39qHtABqR54Tb56igr90O&jump_from=webapi&authKey=MtVWfi/EQbT03wW7tKXv4bmyKYHBHtzI8VewlzSsOdxFjN0wbgNy17np9Z9yC4Z8)
-* [快速上手项目](https://github.com/Moonofweisheng/wot-starter)
-* [Vue3路由库](https://moonofweisheng.github.io/uni-mini-router/)
+* [QQ 群](/guide/join-group.html)
 
-## 开发计划
+## 周边生态
 
-开发计划已公布在[Discussions 讨论区](https://github.com/Moonofweisheng/wot-design-uni/discussions/45)中，欢迎参与讨论，提出意见和建议。
+| 项目                                                                                                        | 描述                                                 |
+| ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [awesome-uni-app](https://github.com/uni-helper/awesome-uni-app)                                            | 多端统一开发框架 uni-app 优秀开发资源汇总            |
+| [create-uni](https://github.com/uni-helper/create-uni)                                                      | 快速创建 uni-app 项目                                |
+| [wot-starter](https://github.com/Moonofweisheng/wot-starter)                                                | 基于 wot-design-uni 的快速上手项目                   |
+| [wot-starter-retail](https://github.com/Moonofweisheng/wot-starter-retail)                                  | 基于 wot-design-uni 的 uni-app 零售行业模板          |
+| [Wot Design Uni Snippets](https://marketplace.visualstudio.com/items?itemName=kiko.wot-design-uni-snippets) | Wot Design Uni 代码块提示                            |
+| [uni-mini-ci](https://github.com/Moonofweisheng/uni-mini-ci)                                                | 一个 uni-app 小程序端构建后支持 CI（持续集成）的插件 |
+| [uni-mini-router](https://github.com/Moonofweisheng/uni-mini-router)                                        | 一个基于 vue3 和 Typescript 的轻量级 uni-app 路由库  |
+| [unibest](https://github.com/codercup/unibest)                                                              | 基于 wot-design-uni 的 uni-app 模板                  |
+| [wot-design-uni AI 助手](https://www.coze.cn/store/bot/7347916532258701363)                                 | 一个能回答你关于 wot-design-uni 组件库问题的智能助手 |
+
+
+## 鸣谢
+
+- [wot-design](https://github.com/jd-ftf/wot-design-mini) - 感谢 wot-design 团队多年来的不断维护，让 wot-design-uni 能够站在巨人的肩膀上。
+- [uni-helper](https://github.com/uni-helper) - 感谢 uni-helper 团队提供的 uni-app 工具库，让 wot-design-uni 能够更方便地使用。
+- [捐赠者](https://wot-design-uni.cn/reward/donor.html) - 感谢所有捐赠者，是你们的捐赠让 wot-design-uni 能够更好地发展。
+
+
   
 ## 开源协议
 
-本项目遵循 MIT 协议。
+本项目基于 [MIT](https://zh.wikipedia.org/wiki/MIT%E8%A8%B1%E5%8F%AF%E8%AD%89) 协议，请自由地享受和参与开源。
 
 <script>
 import WxQrcode from '/wx.jpg'
 import AlipayQrcode from '/alipay.png'
+import H5Qrcode from '/h5.png'
+
 
 export default {
   data () {
     return {
       WxQrcode,
-      AlipayQrcode
+      AlipayQrcode,
+      H5Qrcode
     }
   }
 }

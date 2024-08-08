@@ -276,8 +276,8 @@ const displayFormatTabLabel = (items) => {
 | formatter | 自定义弹出层选项文案的格式化函数，返回一个字符串 | function | - | - | - |
 | filter | 自定义过滤选项的函数，返回列的选项数组 | function | - | - | - |
 | display-format-tab-label | 在区域选择模式下，自定义展示tab标签文案的格式化函数，返回一个字符串 | function | - | - | - |
-| minDate | 最小日期 | date | - | 当前日期 - 10年 | - |
-| maxDate | 最大日期 | date | - | 当前日期 + 10年 | - |
+| minDate | 最小日期，13 位的时间戳    | `timestamp` | - | 当前日期 - 10年 | - |
+| maxDate | 最大日期，13 位的时间戳    | `timestamp` | - | 当前日期 + 10年 | - |
 | minHour | 最小小时，time类型时生效 | number | - | 0 | - |
 | maxHour | 最大小时，time类型时生效 | number | - | 23 | - |
 | minMinute | 最小分钟，time类型时生效 | number | - | 0 | - |
@@ -296,6 +296,7 @@ const displayFormatTabLabel = (items) => {
 | ellipsis | 是否超出隐藏 | boolean | - | false | - |
 | prop | 表单域 `model` 字段名，在使用表单校验功能的情况下，该属性是必填的 | string | - | - | - |
 | rules | 表单验证规则，结合`wd-form`组件使用	 | `FormItemRule []`	 | - | `[]` | - |
+| immediate-change | 是否在手指松开时立即触发picker-view的 change 事件。若不开启则会在滚动动画结束后触发 change 事件，1.2.25版本起提供，仅微信小程序和支付宝小程序支持。 | boolean | - | false | 1.2.25 |
 
 ### FormItemRule 数据结构
 
@@ -333,5 +334,6 @@ const displayFormatTabLabel = (items) => {
 | 类名 | 说明 | 最低版本 |
 |-----|------|--------|
 | custom-view-class | pickerView 外部自定义样式 | - |
+| custom-cell-class | pickerView cell 外部自定义样式 | $LOWEST_VERSION$ |
 | custom-label-class | label 外部自定义样式 | - |
 | custom-value-class | value 外部自定义样式 | - |

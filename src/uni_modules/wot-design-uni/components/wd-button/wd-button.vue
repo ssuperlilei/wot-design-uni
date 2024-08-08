@@ -1,5 +1,6 @@
 <template>
   <button
+    :id="buttonId"
     :hover-class="`${disabled || loading ? '' : 'wd-button--active'}`"
     :style="customStyle"
     :class="[
@@ -16,7 +17,7 @@
     ]"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
-    :open-type="openType"
+    :open-type="disabled || loading ? '' : openType"
     :send-message-title="sendMessageTitle"
     :send-message-path="sendMessagePath"
     :send-message-img="sendMessageImg"
@@ -25,7 +26,6 @@
     :session-from="sessionFrom"
     :lang="lang"
     :hover-stop-propagation="hoverStopPropagation"
-    :form-type="formType"
     @click="handleClick"
     @getuserinfo="handleGetuserinfo"
     @contact="handleConcat"
@@ -39,7 +39,7 @@
     <view v-if="loading" class="wd-button__loading">
       <view class="wd-button__loading-svg" :style="loadingStyle"></view>
     </view>
-    <wd-icon v-else-if="icon" custom-class="wd-button__icon" :name="icon"></wd-icon>
+    <wd-icon v-else-if="icon" custom-class="wd-button__icon" :name="icon" :classPrefix="classPrefix"></wd-icon>
     <view class="wd-button__text"><slot /></view>
   </button>
 </template>
@@ -101,7 +101,7 @@ watch(
 
 function handleClick(event: any) {
   if (!props.disabled && !props.loading) {
-    emit('click', event.detail)
+    emit('click', event)
   }
 }
 

@@ -713,6 +713,16 @@
       }
     },
     {
+      "path": "pages/form/demo4",
+      "name": "formDemo4",
+      "style": {
+        "mp-alipay": {
+          "allowsBounceVertical": "NO"
+        },
+        "navigationBarTitleText": "校验提示方式"
+      }
+    },
+    {
       "path": "pages/fab/Index",
       "name": "fab",
       "style": {
@@ -723,6 +733,16 @@
       }
     },
     {
+      "path": "pages/text/Index",
+      "name": "text",
+      "style": {
+        "mp-alipay": {
+          "allowsBounceVertical": "NO"
+        },
+        "navigationBarTitleText": "Text 文本"
+      }
+    },
+    {
       "path": "pages/countDown/Index",
       "name": "countDown",
       "style": {
@@ -730,6 +750,16 @@
           "allowsBounceVertical": "NO"
         },
         "navigationBarTitleText": "CountDown 倒计时"
+      }
+    },
+    {
+      "path": "pages/statistic/Index",
+      "name": "statistic",
+      "style": {
+        "mp-alipay": {
+          "allowsBounceVertical": "NO"
+        },
+        "navigationBarTitleText": "Statistic 数值显示"
       }
     },
     {
@@ -760,6 +790,26 @@
           "allowsBounceVertical": "NO"
         },
         "navigationBarTitleText": "PasswordInput 密码输入框"
+      }
+    },
+    {
+      "path": "pages/backtop/Index",
+      "name": "backtop",
+      "style": {
+        "mp-alipay": {
+          "allowsBounceVertical": "NO"
+        },
+        "navigationBarTitleText": "Backtop 回到顶部"
+      }
+    },
+    {
+      "path": "pages/indexBar/Index",
+      "name": "indexBar",
+      "style": {
+        "mp-alipay": {
+          "allowsBounceVertical": "NO"
+        },
+        "navigationBarTitleText": "IndexBar 索引栏"
       }
     }
   ],

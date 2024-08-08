@@ -14,6 +14,12 @@
 
 `Wot Design Uni`支持深色模式、主题定制等能力，详见[ConfigProvider 全局配置](/component/config-provider.html)组件。
 
+## 有没有技术交流群？
+
+有！
+可以加入[组件库QQ 群](/guide/join-group.html)，分享心得、交流体会。
+
+
 ## 小程序样式隔离
 
 ### 在页面中使用 Wot Design Uni 组件时，可直接在页面的样式文件中覆盖样式
@@ -178,6 +184,99 @@ uni-app 3.99.2023122704 将支付宝小程序的`styleIsolation`默认值设置�
   // ...
 }
 ```
+
+## 为什么组件库文档中都是从`@/uni_modules/wot-design-uni`导入方法和工具类？
+
+当前组件库本身的开发方式是将组件库代码放到`@/uni_modules/wot-design-uni`这个目录的，所以文档中都是从`@/uni_modules/wot-design-uni`导入方法和工具类，使用`npm`方式安装组件库的时候可以这样调整：
+
+```ts
+// useToast、useNotify等同理
+import { useMessage } from '@/uni_modules/wot-design-uni'
+```
+
+替换为
+
+```ts
+import { useMessage } from 'wot-design-uni'
+```
+
+## uni-app 如何自定义编译平台，例如钉钉小程序？
+
+可以参考`uni-app`文档中[package.json](https://uniapp.dcloud.net.cn/collocation/package.html#%E7%A4%BA%E4%BE%8B-%E9%92%89%E9%92%89%E5%B0%8F%E7%A8%8B%E5%BA%8F)章节。
+
+钉钉小程序示例：
+```JSON
+{
+    "uni-app": {
+    "scripts": {
+      "mp-dingtalk": {
+        "title": "钉钉小程序",
+        "env": {
+          "UNI_PLATFORM": "mp-alipay"
+        },
+        "define": {
+          "MP-DINGTALK": true
+        }
+      }
+    }
+  },
+}
+```
+
+## 当前组件库提供的用于控制组件显示隐藏 hooks 不生效怎么办？
+
+**_可以按照以下步骤进行排查_**
+
+1. `uni-app`平台不支持全局挂载组件，所以`Message`、`Toast`、`Notify`等组件需在 SFC 中显式使用，例如：
+
+```html
+<wd-toast></wd-toast>
+```
+
+2. `useToast`、`useMessage`、`useNotify`、`useQueue`等 hooks 不生效，请检查是否在`setup`中调用，如果`setup`中调用，请检查当前页面是否存在多次执行`use`的场景，例如在多个组件中执行，这样会导致上一次`use`的失效。针对此场景，组件的函数式调用都支持传入`selector`参数，可以通过`selector`参数来指定组件，例如：
+
+```html
+<wd-toast></wd-toast>
+<wd-toast selector="my-toast"></wd-toast>
+```
+
+```ts
+const toast = useToast()
+const myToast = useToast({ selector: 'my-toast' })
+```
+
+## 为什么在微信小程序上使用`Popup`、`ActionSheet`、`DropDownItem`等弹出框组件包裹`Slider`、`Tabs`等组件时，`Slider`、`Tabs`表现异常？
+
+目前uni-app使用`v-if`控制插槽是否显示编译到微信小程序端存在问题，具体可以参考issue:[4755](https://github.com/dcloudio/uni-app/issues/4755)、[4847](https://github.com/dcloudio/uni-app/issues/4847)。而`Popup`、`ActionSheet`、`DropDownItem`恰好正是使用`v-if`控制插槽是否显示，所以会导致`Slider`、`Tabs`在未渲染时执行了相关生命周期。`Slider`、`Tabs`等组件的一些数据如`Slider`的宽度，`Tabs`的滑块位置等会在onMounted等生命周期进行获取，此时这些数据将会存在异常。
+
+解决办法：
+
+1. 在`Slider`、`Tabs`等组件外部使用`v-if`控制弹框打开前不展示，例如：
+
+```html
+<wd-slider v-if="showSlider"></wd-slider>
+```
+
+1. 在`Popup`、`ActionSheet`、`DropDownItem`等组件完全打开时的钩子中重新初始化`Slider`、`Tabs`组件，例如：
+   
+```html
+<wd-popup v-model="show" position="bottom" closable custom-style="height: 200px;" @after-enter="handleOpened">
+<wd-slider v-model="value" ref="slider"></wd-slider>
+</wd-popup>
+```
+```ts
+const slider = ref()
+
+function handleOpened() {
+  slider.value!.initSlider()
+}
+
+```
+
+## 为何messageBox弹出了多个？
+检查一下弹出多个`messageBox`的页面是否存在多个相同`selector`或无`selector`的`<wd-message-box></wd-message-box>`标签(当前页面包括页面中使用的组件)。`toast`亦是同理，在子组件中使用`messageBox`等组件需要指定`selector`并确保`selector`唯一。
+
+
 
 ## 如何快速解决你的问题？
 

@@ -52,7 +52,7 @@
               {
                 required: false,
                 validator: validatorMessage,
-                message: '请输入正确的手机号'
+                message: '请输入正确的玛卡巴卡'
               }
             ]"
           />
@@ -102,6 +102,12 @@
     <demo-block title="复杂表单" transparent>
       <view class="demo-button">
         <wd-button @click="handleClick3" :round="false" block size="large">复杂表单</wd-button>
+      </view>
+    </demo-block>
+
+    <demo-block title="校验提示方式" transparent>
+      <view class="demo-button">
+        <wd-button @click="handleClick4" :round="false" block size="large">校验提示方式</wd-button>
       </view>
     </demo-block>
   </page-wraper>
@@ -198,6 +204,10 @@ function handleClick2() {
 
 function handleClick3() {
   uni.navigateTo({ url: '/pages/form/demo3' })
+}
+
+function handleClick4() {
+  uni.navigateTo({ url: '/pages/form/demo4' })
 }
 </script>
 <style lang="scss" scoped>

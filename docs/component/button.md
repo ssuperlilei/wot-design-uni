@@ -71,7 +71,7 @@
 将 `type` 设置为 `icon`，同时设置 `icon` 属性，icon为图标的类名，可以直接使用 `Icon 图标` 章节中的图标类名。
 
 ```html
-<wd-button type="icon" icon="menu"></wd-button>
+<wd-button type="icon" icon="picture"></wd-button>
 ```
 
 ## 带图标的按钮
@@ -80,6 +80,11 @@
 
 ```html
 <wd-button icon="edit-outline"></wd-button>
+```
+
+结合`classPrefix`可以使用自定义图标，参见 [Icon 自定义图标](/component/icon#自定义图标)。
+```html
+<wd-button classPrefix="fish" icon="kehuishouwu">可回收</wd-button>
 ```
 
 ## 块状按钮
@@ -105,7 +110,6 @@
 | icon | 图标类名 | string | - | - | - |
 | loading-color | 加载图标颜色 | string | - | - | - |
 | open-type | 微信开放能力 | string | - | - | - |
-| <s>form-type</s> | <s>用于 form 组件，点击分别会触发 form 组件的 submit/reset 事件</s>，该属性暂时不可用 | string | submit / reset | - | - |
 | hover-stop-propagation | 指定是否阻止本节点的祖先节点出现点击态 | boolean | - | false | - |
 | lang | 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文 | string | zh_CN / zh_TW | en | - |
 | session-from | 会话来源，open-type="contact"时有效 | string | - | - | - |
@@ -114,18 +118,20 @@
 | send-message-img | 会话内消息卡片图片，open-type="contact"时有效 | string | - | 截图 | - |
 | app-parameter | 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效 | string | - | - | - |
 | show-message-card	| 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，用户点击后可以快速发送小程序消息，open-type="contact"时有效 | boolean | - | false | - |
+| classPrefix | 类名前缀，用于使用自定义图标，参见[icon](/component/icon#自定义图标) | string | - | 'wd-icon' | 0.1.27 |
+| button-id | 按钮的唯一标识，可用于设置隐私同意授权按钮的id | string | - | - | 1.3.6 |
 
 ## Events
 
 | 事件名称 | 说明 | 参数 | 最低版本 |
 |---------|-----|-----|---------|
-| click | 点击事件 | - | - |
-| getuserinfo | 获取用户信息 | - | - |
-| contact | 客服消息回调，open-type="contact"时有效 | - | - |
-| getphonenumber | 获取用户手机号回调，open-type=getPhoneNumber时有效 | - | - |
-| error | 当使用开放能力时，发生错误的回调，open-type=launchApp时有效 | - | - |
-| launchapp | 打开 APP 成功的回调，open-type=launchApp时有效 | - | - |
-| opensetting | 在打开授权设置页后回调，open-type=openSetting时有效 | - | - |
+| click | 点击事件 | `event` | - |
+| getuserinfo | 获取用户信息 | `detail` | - |
+| contact | 客服消息回调，open-type="contact"时有效 | `detail` | - |
+| getphonenumber | 获取用户手机号回调，open-type=getPhoneNumber时有效 | `detail` | - |
+| error | 当使用开放能力时，发生错误的回调，open-type=launchApp时有效 | `detail` | - |
+| launchapp | 打开 APP 成功的回调，open-type=launchApp时有效 | `detail` | - |
+| opensetting | 在打开授权设置页后回调，open-type=openSetting时有效 | `detail` | - |
 
 ## 外部样式类
 

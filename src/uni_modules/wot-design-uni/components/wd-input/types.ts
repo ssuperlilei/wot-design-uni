@@ -1,6 +1,8 @@
 import { baseProps, makeArrayProp, makeBooleanProp, makeNumberProp, makeNumericProp, makeStringProp } from '../common/props'
 import type { FormItemRule } from '../wd-form/types'
 
+export type InputClearTrigger = 'focus' | 'always'
+
 export const inputProps = {
   ...baseProps,
   customInputClass: makeStringProp(''),
@@ -61,7 +63,12 @@ export const inputProps = {
   /**
    * 原生属性，最大长度
    */
-  maxlength: makeNumberProp(-1),
+  maxlength: {
+    type: Number,
+    // #ifndef MP-ALIPAY
+    default: -1
+    // #endif
+  },
   /**
    * 原生属性，禁用
    */
@@ -150,5 +157,19 @@ export const inputProps = {
   /**
    * 表单验证规则，结合wd-form组件使用
    */
-  rules: makeArrayProp<FormItemRule>()
+  rules: makeArrayProp<FormItemRule>(),
+  /**
+   * 显示清除图标的时机，always 表示输入框不为空时展示，focus 表示输入框聚焦且不为空时展示
+   * 类型: "focus" | "always"
+   * 默认值: "always"
+   * 最低版本: $LOWEST_VERSION$
+   */
+  clearTrigger: makeStringProp<InputClearTrigger>('always'),
+  /**
+   * 是否在点击清除按钮时聚焦输入框
+   * 类型: boolean
+   * 默认值: true
+   * 最低版本: $LOWEST_VERSION$
+   */
+  focusWhenClear: makeBooleanProp(true)
 }
