@@ -3,9 +3,9 @@
 # Segmented 分段器 <el-tag text style="vertical-align: middle;margin-left:8px;" effect="plain">0.1.23</el-tag>
 
 ## 何时使用
+
 * 用于展示多个选项并允许用户选择其中单个选项；
 * 当切换选中选项时，关联区域的内容会发生变化。
-
 
 ## 基本用法
 
@@ -14,6 +14,7 @@
 ```vue
 <wd-segmented :options="list" v-model:value="current"></wd-segmented>
 ```
+
 ```ts
 const list = ref<string[]>(['评论', '点赞', '贡献', '打赏'])
 
@@ -27,7 +28,6 @@ const current = ref('点赞')
 ```html
 <wd-segmented :options="list" v-model:value="current" size="large"></wd-segmented>
 ```
-
 
 ## 小型分段器
 
@@ -69,6 +69,7 @@ const current = ref('点赞')
   </template>
 </wd-segmented>
 ```
+
 ```ts
 const list = ref([
   {
@@ -87,6 +88,7 @@ const list = ref([
   }
 ])
 ```
+
 ```scss
 .section {
   width: 100%;
@@ -98,8 +100,6 @@ const list = ref([
 }
 
 ```
-
-
 
 ## Attributes
 
@@ -119,20 +119,18 @@ const list = ref([
 | disabled   | 是否禁用     | boolean                | true \| false | - | 0.1.23   |
 | payload    | 更多数据     | any                    | -      | -      | 0.1.23   |
 
-
 ## Events
 
 | 事件名称 | 说明                       | 参数        | 最低版本 |
 | -------- | -------------------------- | ----------- | -------- |
 | change   | 选项切换时触发             | `SegmentedOption` | 0.1.23   |
-| click   | 选项点击时触发             | `SegmentedOption` | 1.2.20   |
+| click   | 选项点击时触发             | `SegmentedOption` | $LOWEST_VERSION$   |
 
 ## Slots
 
 | name   | 说明                 | 参数                    | 最低版本 |
 | ------ | -------------------- | ----------------------- | -------- |
 | label  | 选项标签内容         | `{ option: SegmentedOption }` | 0.1.23   |
-
 
 ## 外部样式类
 
